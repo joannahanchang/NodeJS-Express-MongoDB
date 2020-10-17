@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const campsiteRouter = require('./routes/campsiteRouter');
+const promotionRouter = require('./routes/promotionRouter');
 
 const hostname = 'localhost';
 const port = 3000;
@@ -11,6 +12,7 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 
 app.use('/campsites', campsiteRouter);
+app.use('/promotions', promotionRouter);
 
 
 // app.get('/campsites/:campsiteId', (req, res) => {
