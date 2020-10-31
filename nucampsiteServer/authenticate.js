@@ -39,7 +39,7 @@ exports.jwtPassport = passport.use(
 );
 
 
-export function verifyAdmin(req, res, next) {
+function verifyAdmin(req, res, next) {
     console.log(req.user);
 
     if (!req.user || !req.user.admin) {
@@ -60,7 +60,7 @@ export function verifyAdmin(req, res, next) {
 //             return next(err);
 //         }
 
-//         const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
+//         const auth = Buffer.from(authHeader.splitn(' ')[1], 'base64').toString().split(':');
 //         const user = auth[0];
 //         const pass = auth[1];
 //         if (user === 'admin') {
@@ -83,4 +83,5 @@ export function verifyAdmin(req, res, next) {
 //     }
 // }
 
+exports.verifyAdmin = verifyAdmin;
 exports.verifyUser = passport.authenticate('jwt', {session: false});
