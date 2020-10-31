@@ -38,4 +38,49 @@ exports.jwtPassport = passport.use(
     )
 );
 
+
+export function verifyAdmin(req, res, next) {
+    console.log(req.user);
+
+    if (!req.user || !req.user.admin) {
+        const err = new Error('You are not authorized to perform this operation!');                    
+        err.status = 403;
+        return next(err);
+    } else {
+        return next();
+    }
+}
+
+//     if (!req.session.user) {
+//         const authHeader = req.headers.authorization;
+//         if (!authHeader) {
+//             const err = new Error('You are not authenticated!');
+//             res.setHeader('WWW-Authenticate', 'Basic');
+//             err.status = 401;
+//             return next(err);
+//         }
+
+//         const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
+//         const user = auth[0];
+//         const pass = auth[1];
+//         if (user === 'admin') {
+//             req.user.admin = 'admin';
+//             return next(); // authorized
+//         } else {
+//             const err = new Error('You are not authorized to perform this operation!');
+//             res.setHeader('WWW-Authenticate', 'Basic');
+//             err.status = 403;
+//             return next(err);
+//         }
+//     } else {
+//         if (req.user.admin === 'admin') {
+//             return next();
+//         } else {
+//             const err = new Error('You are not authorized to perform this operation!');
+//             err.status = 403;
+//             return next(err);
+//         }
+//     }
+// }
+
 exports.verifyUser = passport.authenticate('jwt', {session: false});
