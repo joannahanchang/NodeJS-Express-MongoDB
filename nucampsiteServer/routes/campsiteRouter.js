@@ -173,6 +173,12 @@ campsiteRouter.route('/:campsiteId/comments/:commentId')
 .put(authenticate.verifyUser, (req, res, next) => {
     Campsite.findById(req.params.campsiteId)
     .then(campsite => {
+        if (!campsite.author.equals(req.user._id)) {
+            res.statusCode = 403;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({ message: 'not your comment!' });
+            return;
+        }
         if (campsite && campsite.comments.id(req.params.commentId)) {
             if (req.body.rating) {
                 campsite.comments.id(req.params.commentId).rating = req.body.rating;
@@ -202,6 +208,12 @@ campsiteRouter.route('/:campsiteId/comments/:commentId')
 .delete(authenticate.verifyUser, (req, res, next) => {
     Campsite.findById(req.params.campsiteId)
     .then(campsite => {
+        if (!campsite.author.equals(req.user._id)) {
+            res.statusCode = 403;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({ message: 'not your comment!' });
+            return;
+        }
         if (campsite && campsite.comments.id(req.params.commentId)) {
             campsite.comments.id(req.params.commentId).remove();
             campsite.save()
