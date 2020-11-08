@@ -23,7 +23,7 @@ favoriteRouter.route('/')
 })
 .post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     const campsitesToCreate = req.body;
-    Favorite.findOne({user: req.user._id })
+    Favorite.findOne({ user: req.user._id })
     .then(favorite => {
         if(!favorite) {
             Favorite.create({ user: req.user._id, campsites: req.body })
@@ -32,10 +32,10 @@ favoriteRouter.route('/')
             });
         }
         const campsiteIdsToAdd = req.body
-            .map((campsite) => campsite._id) // ['serg', '234r', ] 
+            .map((campsite) => campsite._id) 
             .filter((campsiteId) => !favorite.campsites.includes(campsiteId));
 
-        favorite.campsites = [...favorite.campsites, ...campsiteIdsToAdd];
+        favorites.campsites = [...favorite.campsites, ...campsiteIdsToAdd];
 
         favorite.save((error, favorite) => {
             if (error) {
@@ -52,12 +52,12 @@ favoriteRouter.route('/')
     res.end('PUT operation not supported on /favorites');
 })
 .delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
-    Favorite.findOneAndDelete()
+    Favorite.findOneAndDelete({ user: req.user._id })
     .then(response => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json(response);
-    })
+    });
         res.setHeader('Content-Type', 'text/plain');
         res.end(`You do not have any favorites to delete.`);
 });
@@ -67,10 +67,18 @@ favoriteRouter.route('/:campsiteId')
     res.statusCode = 403;
     res.end(`POST operation not supported on /favorites/${req.params.campsiteId}`);
 })
-// .post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
-//     res.statusCode = 403;
-//     res.end(`POST operation not supported on /favorites/${req.params.campsiteId}`);
-// })
+.post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+    Favorite.findOne({ user: req.user._id })
+    .then(favorite => {
+        if(!favorites.campsites) {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(favorite);
+        }
+        res.setHeader('Content-Type', 'text/plain');
+        res.end(`The campsite is already in the list of favorites!.`);
+    })
+})
 .put(cors.corsWithOptions, authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.end(`POST operation not supported on /favorites/${req.params.campsiteId}`);
